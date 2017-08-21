@@ -5,8 +5,6 @@ collective.statusview
 Overview
 ========
 
-
-
 This Plone add-on provides a configurable status view.
 
 The view  is similar to the standard ``@@ok``, used in `status checking`__, but is configurable.
