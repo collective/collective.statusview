@@ -82,6 +82,7 @@ Example:
     Set global status to *sick*,                  *sick*,         *sick*,     *sick*
     Set global status to *healthy*,               *healthy*,      *sick*,     *healthy*
     Set global status to *per-instance*,          *per-instance*, *sick*,     *sick*
+    Set global status to *healthy*,               *healthy*,      *sick*,     *healthy*
 
 
 Web API
