@@ -1,0 +1,4 @@
+<layers>
+    <layer name="collective.statusview" interface="collective.statusview.interfaces.ILayer" />
+</layers>
+

@@ -1,0 +1,3 @@
+# Keep in sync with buildout.cfg versions section.
+setuptools==36.2.7
+zc.buildout==2.9.4
