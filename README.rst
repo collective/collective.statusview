@@ -13,7 +13,7 @@ The view  is similar to the standard ``@@ok``, used in `status checking`__, but 
 
 __ https://docs.plone.org/manage/deploying/production/status_check.html
 
-The user can configure if the site is considered "healthy" or "sick", and the view will return the
+The user can configure if the site is considered *healthy* or *sick*, and the view will return the
 corresponding HTTP status code and body text. The configuration can be done per Zope instance or
 globally.
 
@@ -31,27 +31,35 @@ settings are available:
 
 Global status
 	Healthy, sick or per-instance?
-Current instance status
-	Healthy or sick? Global status must be set to "per-instance" for this to take effect.
+
 Healthy status
-	The HTTP status code to return when the instance is healthy. Default: 200.
+	The HTTP status code to return when healthy. Default: 200.
+
 Sick status
-	The HTTP status code to return when the instance is sick. Default: 500.
+	The HTTP status code to return when sick. Default: 500.
+
 Healthy text
-	The text to return when the instance is healthy. Default: healthy.
+	The text to return when healthy. Default: healthy.
+
 Sick text
-	The text to return when the instance is sick. Default: sick.
+	The text to return when sick. Default: sick.
+
+
+.. IMPORTANT::
+
+   Currently it is not possible to change the instance status using the control panel UI
+   (it's in the TODO list). The `Web API`_ can be used for this.
 
 
 Global Status vs Instance Status
 ================================
 
-The global status can be "healthy", "sick" or "per-instance". The instance status can be
-"healthy" or "sick".
+The global status can be *healthy*, *sick* or *per-instance*. The instance status can be *healthy*
+or *sick*.
 
-The view will return "healthy" or "sick" according to the following algorithm:
+The ``@@status`` view will return *healthy* or *sick* according to the following algorithm:
 
-.. code-block: python
+.. code-block:: python
 
    if global_status != 'per-instance':
        return global_status
@@ -59,49 +67,42 @@ The view will return "healthy" or "sick" according to the following algorithm:
        return instance_status
 
 The global status is stored in ZODB. The instance status is stored in memory. When the instance
-is started it is set to "healthy".
+is started it is set to *healthy*.
 
-Changing the global status value _never_ changes the instance status and vice-versa. They are
-completely independent.
+Changing the global status *never* changes the instance status, and vice-versa. They are
+completely independent in this regard.
 
 Example:
 
+.. csv-table::
+   :header: "Action", "Global Status", "Instance Status", "View Returns"
 
-
-
-+----------------------------------------------+---------------+-----------------+--------------+
-| Action                                       | Global Status | Instance status | View returns |
-+==============================================+===============+=================+==============+
-| Zope instance starts and add-on is installed | HEALTHY       | HEALTHY         | *HEALTHY*    |
-+----------------------------------------------+---------------+-----------------+--------------+
-| User set instance status to SICK             | HEALTHY       | SICK            | *HEALTHY*    |
-+----------------------------------------------+---------------+-----------------+--------------+
-| User set global status to SICK               | SICK          | SICK            | *SICK*       |
-+----------------------------------------------+---------------+-----------------+--------------+
-| User set global status to HEALTHY            | HEALTHY       | SICK            | *HEALTHY*    |
-+----------------------------------------------+---------------+-----------------+--------------+
-| User set global status to PER-INSTANCE       | PER-INSTANCE  | SICK            | *SICK*       |
-+----------------------------------------------+---------------+-----------------+--------------+
-
+    Zope instance starts and add-on is installed, *healthy*,      *healthy*,  *healthy*
+    Set instance status to sick,                  *healthy*,      *sick*,     *healthy*
+    Set global status to *sick*,                  *sick*,         *sick*,     *sick*
+    Set global status to *healthy*,               *healthy*,      *sick*,     *healthy*
+    Set global status to *per-instance*,          *per-instance*, *sick*,     *sick*
 
 
 Web API
 =======
 
-The ``@@manage-status-view`` allows to get/set the status.
+The ``@@manage-status-view`` allows to get and set the status.
 
 The view accepts the following HTTP methods:
 
 ``GET``
 	Get the status. A JSON object will be returned, containg the global status, the instance
 	status and the status that ``@@status`` will actually return.
+
 ``POST``
-	Set the status. Parameters:
+	Set the status. Query string parameters:
 
 	``global``
-		Value must be one of: ``healthy``, ``sick`` or ``per-instance``.
+		One of: ``healthy``, ``sick`` or ``per-instance``.
+
 	``instance``
-		Value must be one of: ``healthy`` or ``sick``.
+		One of: ``healthy`` or ``sick``.
 
 	The same body returned for the ``GET`` method is returned, allowing to inspect what is the
 	new status.
